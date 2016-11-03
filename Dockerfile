@@ -1,13 +1,16 @@
-FROM nginx:1.7
-MAINTAINER yeasy@github.com
+FROM nginx:latest
+MAINTAINER tperalta82@github.com
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update -qq && \
-    apt-get -y install curl runit && \
+    apt-get -y install wget unzip runit && \
     rm -rf /var/lib/apt/lists/*
 
-ENV CT_URL https://github.com/hashicorp/consul-template/releases/download/v0.10.0/consul-template_0.10.0_linux_amd64.tar.gz
-RUN curl -L $CT_URL | tar -C /usr/local/bin --strip-components 1 -zxf -
+RUN wget https://releases.hashicorp.com/consul-template/0.16.0/consul-template_0.16.0_linux_amd64.zip -O /tmp/consul-template.zip
+RUN unzip /tmp/consul-template.zip -d /usr/local/bin/
+RUN rm -f /tmp/consul-template.zip
+RUN apt-get -y --purge remove wget unzip
+RUN apt-get -y --purge autoremove
 
 ADD nginx.service /etc/service/nginx/run
 RUN chmod a+x /etc/service/nginx/run
