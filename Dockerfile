@@ -21,15 +21,11 @@ RUN chmod a+x /etc/service/openresty/run
 ADD consul-template.service /etc/service/consul-template/run
 RUN chmod a+x /etc/service/consul-template/run
 
-ADD app.conf /etc/consul-templates/nginx.conf
-ADD nginx.conf /opt/openresty/nginx/conf/nginx.conf
+ADD app.conf /etc/consul-templates/app.conf
+ADD nginx.conf /etc/consul-templates/nginx.conf
 ADD lua/uuid4.lua /opt/openresty/nginx/lua/uuid4.lua
 RUN mkdir /opt/openresty/nginx/conf/conf.d
 ADD status.conf /opt/openresty/nginx/conf/conf.d/status.conf
 RUN adduser  --group --system --shell /bin/false --no-create-home --disabled-password --home /nonexistent nginx
-#RUN mkdir /var/log/nginx/
-#RUN touch /var/log/nginx/error.log && \
-#    touch /var/log/nginx/access.log && \
-#    chown nginx:nginx /var/log/nginx/*
 
 CMD ["/usr/bin/runsvdir", "/etc/service"]
